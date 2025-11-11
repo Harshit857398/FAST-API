@@ -1,18 +1,22 @@
-#Connect to database user sqlalchemy(ORM)
-from sqlalchemy import *
-from fastapi import *
+from database import *
+from fastapi import FastAPI
+from models import*
 app = FastAPI()
+from sqlalchemy.orm import*
 
-import os
-from dotenv import load_dotenv
 
-load_dotenv()
+app = FastAPI(title="CRUD Application")
 
-DB_USER=os.getenv("DB_USER")
-DB_PASS=os.getenv("DB_PASS")
-DB_HOST=os.getenv("DB_HOST")
-DB_PORT=os.getenv("DB_PORT")
-DB_NAME=os.getenv("DB_NAME")
+@app.get("/")
+def root():
+    return {"message": "Your app is running"}
 
-app=FastAPI(title="CRUD APPILICATION")
+def get_db():
+    db=SessionLocal()
+    try:
+        yield db
+    except Exception as e:
+        print("Error:",e)
+    finally:
+        db.close()
 
